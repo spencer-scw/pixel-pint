@@ -1,0 +1,43 @@
+.canvas-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  background-color: #eee;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.canvas-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  pointer-events: none; /* Let events pass through to interaction layer if needed, or just let interaction layer sit on top */
+}
+
+.interaction-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+.checkerboard {
+  z-index: 0;
+}
+
+.background {
+  z-index: 1;
+}
+
+.foreground {
+  z-index: 2;
+}
