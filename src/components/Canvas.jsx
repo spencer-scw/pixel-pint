@@ -25,6 +25,20 @@ const Canvas = forwardRef(({ width = 16, height = 16, activeTool = 'draw', activ
       if (foregroundRef.current) tempCtx.drawImage(foregroundRef.current, 0, 0);
       
       return tempCanvas.toDataURL();
+    },
+    exportImage: (scale = 1) => {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = width * scale;
+      tempCanvas.height = height * scale;
+      const tempCtx = tempCanvas.getContext('2d');
+      
+      // Disable smoothing for pixel art
+      tempCtx.imageSmoothingEnabled = false;
+      
+      if (backgroundRef.current) tempCtx.drawImage(backgroundRef.current, 0, 0, width * scale, height * scale);
+      if (foregroundRef.current) tempCtx.drawImage(foregroundRef.current, 0, 0, width * scale, height * scale);
+      
+      return tempCanvas.toDataURL('image/png');
     }
   }));
 

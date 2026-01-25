@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { getProjects, createProject } from '../utils/storage';
 import './ProjectList.css';
 
-const ProjectList = ({ projects, onCreateProject, onSelectProject }) => {
+const ProjectList = ({ onSelectProject }) => {
+  const [projects, setProjects] = useState([]);
   const [isCreating, setIsCreating] = useState(false);
   const [newName, setNewName] = useState('');
   const [newSize, setNewSize] = useState(16);
 
+  useEffect(() => {
+    setProjects(getProjects());
+  }, []);
+
   const handleCreate = (e) => {
     e.preventDefault();
     const name = newName.trim() || 'untitled';
-    onCreateProject(name, newSize);
-    setIsCreating(false);
-    setNewName('');
-    setNewSize(16);
+    const newProject = createProject(name, newSize);
+    onSelectProject(newProject.id);
   };
 
   return (
@@ -48,7 +52,7 @@ const ProjectList = ({ projects, onCreateProject, onSelectProject }) => {
            <p className="empty-state">No drawings yet. Create one!</p>
         )}
         {projects.map((project) => (
-          <div key={project.id} className="project-card" onClick={() => onSelectProject(project)}>
+          <div key={project.id} className="project-card" onClick={() => onSelectProject(project.id)}>
             <div className="project-preview">
                {project.thumbnail ? (
                  <img src={project.thumbnail} alt={project.name} className="thumbnail-img" />
