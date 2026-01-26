@@ -1,6 +1,8 @@
 const STORAGE_PREFIX = 'pixel-pint-';
 const LIST_KEY = `${STORAGE_PREFIX}projects-list`;
 
+const CUSTOM_PALETTES_KEY = `${STORAGE_PREFIX}custom-palettes`;
+
 export const getProjects = () => {
   const list = localStorage.getItem(LIST_KEY);
   return list ? JSON.parse(list) : [];
@@ -19,13 +21,14 @@ export const loadProjectData = (id) => {
   return data ? JSON.parse(data) : null;
 };
 
-export const createProject = (name, width, height) => {
+export const createProject = (name, width, height, palette) => {
   const id = Date.now().toString();
   const newProject = {
     id,
     name,
     width: parseInt(width),
     height: parseInt(height),
+    palette: palette || ['#000000', '#FFFFFF'],
     lastModified: Date.now(),
   };
   
@@ -37,6 +40,17 @@ export const createProject = (name, width, height) => {
   saveProjectData(id, { foreground: null, background: null });
   
   return newProject;
+};
+
+export const getCustomPalettes = () => {
+  const data = localStorage.getItem(CUSTOM_PALETTES_KEY);
+  return data ? JSON.parse(data) : {};
+};
+
+export const saveCustomPalette = (name, colors) => {
+  const palettes = getCustomPalettes();
+  palettes[name] = colors;
+  localStorage.setItem(CUSTOM_PALETTES_KEY, JSON.stringify(palettes));
 };
 
 export const updateProjectMeta = (id, updates) => {

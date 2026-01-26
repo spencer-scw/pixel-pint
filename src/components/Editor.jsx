@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Download, ChevronLeft, MoreVertical, Trash2 } from 'lucide-react';
+import { Download, ChevronLeft, MoreVertical, Trash2, Palette as PaletteIcon } from 'lucide-react';
 import Canvas from './canvas/Canvas';
 import Palette from './Palette';
 import Toolbar from './Toolbar';
 import ExportModal from './ExportModal';
+import PaletteModal from './PaletteModal';
 import { loadProjectData, saveProjectData, updateProjectMeta, getProjects } from '../utils/storage';
 
 const Editor = ({ projectId, onBack }) => {
@@ -13,6 +14,7 @@ const Editor = ({ projectId, onBack }) => {
   const [activeLayer, setActiveLayer] = useState('foreground');
   const [selectedColor, setSelectedColor] = useState('#000000');
   const [showExportModal, setShowExportModal] = useState(false);
+  const [showPaletteModal, setShowPaletteModal] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
   const [isEditingName, setIsEditingName] = useState(false);
   const [editingName, setEditingName] = useState('');
@@ -29,20 +31,18 @@ const Editor = ({ projectId, onBack }) => {
       setProject(foundProject);
       setEditingName(foundProject.name);
       setProjectData(loadProjectData(projectId));
+      if (foundProject.palette && foundProject.palette.length > 0) {
+        setSelectedColor(foundProject.palette[0]);
+      }
     }
   }, [projectId]);
-
-  const colors = [
-    '#000000', '#808080', '#FFFFFF', '#FF0000', '#FFA500',
-    '#FFFF00', '#008000', '#0000FF', '#4B0082', '#EE82EE'
-  ];
 
   const handleSave = useCallback(() => {
     if (canvasRef.current && project) {
       const data = canvasRef.current.save();
       const thumbnail = canvasRef.current.getThumbnail();
       saveProjectData(projectId, data);
-      updateProjectMeta(projectId, { thumbnail, name: project.name });
+      updateProjectMeta(projectId, { thumbnail, name: project.name, palette: project.palette });
       setSaveStatus('saved');
     }
   }, [project, projectId]);
@@ -91,6 +91,12 @@ const Editor = ({ projectId, onBack }) => {
     }
   };
 
+  const onPaletteChange = (newPalette) => {
+    setProject(prev => ({ ...prev, palette: newPalette }));
+    setSelectedColor(newPalette[0]);
+    triggerAutoSave();
+  };
+
   if (!project) return null;
 
   return (
@@ -128,6 +134,10 @@ const Editor = ({ projectId, onBack }) => {
             </button>
             {showMoreMenu && (
               <div className="more-menu">
+                <button className="menu-item" onClick={() => { setShowPaletteModal(true); setShowMoreMenu(false); }}>
+                  <PaletteIcon size={16} /> Change Palette
+                </button>
+                <div className="menu-divider" />
                 <button className="menu-item danger" onClick={handleResetCanvas}>
                   <Trash2 size={16} /> Reset Canvas
                 </button>
@@ -139,7 +149,7 @@ const Editor = ({ projectId, onBack }) => {
 
       <main>
         <Palette 
-          colors={colors} 
+          colors={project.palette} 
           selectedColor={selectedColor} 
           onSelectColor={(color) => {
             setSelectedColor(color);
@@ -177,6 +187,13 @@ const Editor = ({ projectId, onBack }) => {
         onExport={handleExport}
         width={project.width}
         height={project.height}
+      />
+
+      <PaletteModal 
+        isOpen={showPaletteModal} 
+        onClose={() => setShowPaletteModal(false)} 
+        onSave={onPaletteChange}
+        currentPalette={project.palette}
       />
     </>
   );

@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { createProject } from '../utils/storage';
+import PaletteSelector from './PaletteSelector';
 
 const NewProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
   const [name, setName] = useState('');
   const [width, setWidth] = useState(16);
   const [height, setHeight] = useState(16);
+  const [selectedColors, setSelectedColors] = useState([]);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const finalName = name.trim() || 'untitled';
-    const newProject = createProject(finalName, width, height);
+    const newProject = createProject(finalName, width, height, selectedColors);
     onProjectCreated(newProject.id);
   };
 
@@ -36,8 +38,7 @@ const NewProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
               <label>Width</label>
               <input
                 type="number"
-                min="1"
-                max="128"
+                min="1" max="128"
                 value={width}
                 onChange={(e) => setWidth(e.target.value)}
               />
@@ -46,13 +47,14 @@ const NewProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
               <label>Height</label>
               <input
                 type="number"
-                min="1"
-                max="128"
+                min="1" max="128"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
               />
             </div>
           </div>
+
+          <PaletteSelector onPaletteSelect={setSelectedColors} />
 
           <div className="size-presets">
              <button type="button" onClick={() => { setWidth(8); setHeight(8); }}>8x8</button>
@@ -63,7 +65,7 @@ const NewProjectModal = ({ isOpen, onClose, onProjectCreated }) => {
 
           <div className="modal-actions">
             <button type="button" className="secondary-btn" onClick={onClose}>Cancel</button>
-            <button type="submit" className="primary-btn">Create</button>
+            <button type="submit" className="primary-btn">Create Project</button>
           </div>
         </form>
       </div>
