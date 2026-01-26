@@ -8,6 +8,13 @@ export default defineConfig({
     host: true,
     allowedHosts: [
       "skrewt-station.local"
-    ]
+    ],
+    proxy: {
+      '/lospec-api': {
+        target: 'https://lospec.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/lospec-api/, '')
+      }
+    }
   }
 })

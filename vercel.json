@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/lospec-api/:path*",
+      "destination": "https://lospec.com/:path*"
+    }
+  ]
+}

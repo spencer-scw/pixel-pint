@@ -137,6 +137,12 @@ header h1 {
   background: #f5f5f5;
 }
 
+.menu-divider {
+  height: 1px;
+  background: #eee;
+  margin: 4px 0;
+}
+
 .menu-item.danger {
   color: #dc3545;
 }
@@ -177,22 +183,213 @@ main {
   gap: 1rem;
 }
 
-.palette-bar {
+.palette-select-container {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: 0.5rem;
-  padding: 0.5rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  align-items: center;
+}
+
+.palette-import-buttons {
+  display: flex;
+  gap: 2px;
+}
+
+.palette-import-buttons button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #666;
+}
+
+.palette-import-buttons button.active {
+  background: #333;
+  color: white;
+  border-color: #333;
+}
+
+.lospec-import-row {
+  display: flex;
+  gap: 4px;
+  background: #f5f5f5;
+  padding: 4px;
+  border-radius: 6px;
   border: 1px solid #eee;
 }
 
+.lospec-import-row input {
+  flex: 1;
+  padding: 4px 8px !important;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.8rem !important;
+}
+
+.import-submit-btn, .lospec-link-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.import-submit-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+}
+
+.import-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lospec-link-btn {
+  background: #eee;
+  color: #666;
+  border: 1px solid #ddd;
+  text-decoration: none;
+}
+
+.modal-description {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  .palette-import-buttons button {
+    background: #2a2a2a;
+    border-color: #444;
+    color: #aaa;
+  }
+  .palette-import-buttons button.active {
+    background: #eee;
+    color: #1a1a1a;
+    border-color: #eee;
+  }
+  .lospec-import-row {
+    background: #222;
+    border-color: #333;
+  }
+  .lospec-import-row input {
+    background: #1a1a1a !important;
+    border-color: #444 !important;
+    color: white !important;
+  }
+  .lospec-link-btn {
+    background: #333;
+    color: #aaa;
+    border-color: #444;
+  }
+  .modal-description {
+    color: #aaa;
+  }
+}
+
+/* Palette Selector & Previews */
+.palette-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.palette-preview-strip {
+  display: flex;
+  flex-direction: row;
+  height: 12px;
+  border-radius: 2px;
+  overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.1);
+  width: 100%;
+}
+
+.preview-color {
+  flex: 1;
+  height: 100%;
+}
+
+.preview-more {
+  font-size: 8px;
+  background: #eee;
+  padding: 0 2px;
+  line-height: 10px;
+}
+
+.preview-loading {
+  font-size: 0.8rem;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.palette-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border: 1px solid #eee;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.palette-row {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.palette-select {
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  color: #333;
+  font-size: 1rem;
+  width: 100%;
+}
+
+@media (prefers-color-scheme: dark) {
+  .palette-container {
+    background: #1a1a1a;
+    border-color: #333;
+  }
+  .palette-select {
+    background: #2a2a2a;
+    border-color: #444;
+    color: white;
+  }
+}
+
 .color-swatch {
-  width: 48px;
-  height: 48px;
+  min-width: 32px;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
   border-radius: 4px;
   border: 1px solid rgba(0,0,0,0.1);
   cursor: pointer;
