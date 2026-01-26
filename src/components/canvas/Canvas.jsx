@@ -195,13 +195,20 @@ const Canvas = forwardRef(({
   };
 
   return (
-    <div className="canvas-wrapper" style={{ aspectRatio: `${width} / ${height}` }}>
+    <div 
+      className="canvas-wrapper" 
+      style={{ 
+        aspectRatio: `${width} / ${height}`,
+        '--canvas-width': width,
+        '--canvas-height': height
+      }}
+    >
       <div className="canvas-container"
         style={{ transform: `translate(${transform.x}px, ${transform.y}px) scale(${transform.scale})`, cursor: isDrawing.current ? 'crosshair' : (touchState.current.isZooming ? 'move' : 'crosshair') }}
       >
         <canvas ref={checkerboardRef} width={width} height={height} className="canvas-layer checkerboard" />
         <canvas ref={backgroundRef} width={width} height={height} className="canvas-layer background" />
-        <canvas ref={foregroundRef} width={width} height={height} className="canvas-layer foreground" />
+        <canvas ref={foregroundRef} width={width} height={height} className={`canvas-layer foreground ${activeLayer === 'background' ? 'outlined' : ''}`} />
         <div 
           className="interaction-layer"
           onMouseDown={onMouseDown} onMouseMove={onMouseMove} onMouseUp={onMouseUp} onMouseLeave={onMouseUp}
