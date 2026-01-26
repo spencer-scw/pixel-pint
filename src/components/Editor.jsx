@@ -153,7 +153,9 @@ const Editor = ({ projectId, onBack }) => {
           selectedColor={selectedColor} 
           onSelectColor={(color) => {
             setSelectedColor(color);
-            setTool('draw');
+            if (tool === 'erase') {
+              setTool('draw');
+            }
           }} 
         />
 

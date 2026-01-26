@@ -21,7 +21,8 @@ function App() {
     <div className="app-container">
       {view === 'home' && (
         <>
-          <header>
+          <header className="home-header">
+            <img src="/favicon.svg" alt="pixel-pint logo" className="home-logo" />
             <h1>pixel-pint</h1>
           </header>
           <ProjectList onSelectProject={handleSelectProject} />
