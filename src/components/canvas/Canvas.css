@@ -1,0 +1,75 @@
+.canvas-wrapper {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden; /* Contain the zoomed canvas */
+  background-color: #eee;
+  border-radius: 8px;
+  touch-action: none;
+}
+
+.canvas-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-origin: center center;
+  transition: transform 0.05s linear; /* Smooth but responsive */
+}
+
+.canvas-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+  pointer-events: none;
+}
+
+.interaction-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+}
+
+.checkerboard {
+  z-index: 0;
+}
+
+.background {
+  z-index: 1;
+}
+
+.foreground {
+  z-index: 2;
+}
+
+.zoom-indicator {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-family: monospace;
+  pointer-events: auto;
+  cursor: pointer;
+  z-index: 20;
+}
+
+@media (prefers-color-scheme: dark) {
+  .canvas-wrapper {
+    background-color: #1a1a1a;
+  }
+  .zoom-indicator {
+    background: rgba(255, 255, 255, 0.2);
+  }
+}

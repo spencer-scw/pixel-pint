@@ -1,61 +1,55 @@
 import React, { useState, useEffect } from 'react';
-import { getProjects, createProject } from '../utils/storage';
+import { Plus } from 'lucide-react';
+import { getProjects } from '../utils/storage';
+import NewProjectModal from './NewProjectModal';
 import './ProjectList.css';
 
 const ProjectList = ({ onSelectProject }) => {
   const [projects, setProjects] = useState([]);
-  const [isCreating, setIsCreating] = useState(false);
-  const [newName, setNewName] = useState('');
-  const [newSize, setNewSize] = useState(16);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     setProjects(getProjects());
   }, []);
 
-  const handleCreate = (e) => {
-    e.preventDefault();
-    const name = newName.trim() || 'untitled';
-    const newProject = createProject(name, newSize);
-    onSelectProject(newProject.id);
+  const handleProjectCreated = (id) => {
+    setIsModalOpen(false);
+    onSelectProject(id);
   };
 
   return (
     <div className="project-list-container">
       <div className="project-list-header">
         <h2>Your Drawings</h2>
-        <button onClick={() => setIsCreating(!isCreating)} className="new-project-btn">
-          {isCreating ? 'Cancel' : '+ New Project'}
+        <button onClick={() => setIsModalOpen(true)} className="new-project-btn">
+          <Plus size={18} /> New Project
         </button>
       </div>
 
-      {isCreating && (
-        <form className="create-project-form" onSubmit={handleCreate}>
-          <input
-            type="text"
-            placeholder="Drawing Name (optional)"
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            autoFocus
-          />
-          <div className="size-selector">
-             <label>Size:</label>
-             <button type="button" className={newSize === 16 ? 'active' : ''} onClick={() => setNewSize(16)}>16x16</button>
-             <button type="button" className={newSize === 32 ? 'active' : ''} onClick={() => setNewSize(32)}>32x32</button>
-             <button type="button" className={newSize === 64 ? 'active' : ''} onClick={() => setNewSize(64)}>64x64</button>
-          </div>
-          <button type="submit" className="create-confirm-btn">Start Drawing</button>
-        </form>
-      )}
+      <NewProjectModal 
+        isOpen={isModalOpen} 
+        onClose={() => setIsModalOpen(false)} 
+        onProjectCreated={handleProjectCreated}
+      />
 
       <div className="projects-grid">
-        {projects.length === 0 && !isCreating && (
+        {projects.length === 0 && (
            <p className="empty-state">No drawings yet. Create one!</p>
         )}
         {projects.map((project) => (
           <div key={project.id} className="project-card" onClick={() => onSelectProject(project.id)}>
-            <div className="project-preview">
+            <div className={`project-preview ${project.thumbnail ? 'has-thumbnail' : ''}`}>
                {project.thumbnail ? (
-                 <img src={project.thumbnail} alt={project.name} className="thumbnail-img" />
+                 <img 
+                   src={project.thumbnail} 
+                   alt={project.name} 
+                   className="thumbnail-img" 
+                   style={{ 
+                     aspectRatio: `${project.width} / ${project.height}`,
+                     width: project.width >= project.height ? '100%' : 'auto',
+                     height: project.width >= project.height ? 'auto' : '100%'
+                   }}
+                 />
                ) : (
                  <span className="project-size-badge">{project.width}x{project.height}</span>
                )}

@@ -19,13 +19,13 @@ export const loadProjectData = (id) => {
   return data ? JSON.parse(data) : null;
 };
 
-export const createProject = (name, size) => {
+export const createProject = (name, width, height) => {
   const id = Date.now().toString();
   const newProject = {
     id,
     name,
-    width: size,
-    height: size,
+    width: parseInt(width),
+    height: parseInt(height),
     lastModified: Date.now(),
   };
   
