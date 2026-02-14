@@ -4,13 +4,13 @@ import { fetchLospecPalette, getPopularPaletteNames, parseHexFile } from '../uti
 import { getCustomPalettes, saveCustomPalette } from '../utils/storage';
 import PalettePreview from './PalettePreview';
 
-const PaletteSelector = ({ onPaletteSelect, currentPaletteColors }) => {
-  const [selectedName, setSelectedPaletteName] = useState('pico-8');
+const PaletteSelector = ({ onPaletteSelect, onPaletteNameSelect, currentPaletteColors, currentPaletteName, sortPreview = 'none' }) => {
+  const [selectedName, setSelectedPaletteName] = useState(() => currentPaletteName || 'pico-8');
   const [popularNames, setPopularNames] = useState([]);
   const [customPalettes, setCustomPalettes] = useState({});
   const [previewColors, setPreviewColors] = useState(currentPaletteColors || []);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [showLospecImport, setShowLospecInput] = useState(false);
   const [lospecInputName, setLospecInputName] = useState('');
 
@@ -22,22 +22,30 @@ const PaletteSelector = ({ onPaletteSelect, currentPaletteColors }) => {
   // Update preview when selection changes
   useEffect(() => {
     const updatePreview = async () => {
-      if (customPalettes[selectedName]) {
-        const colors = customPalettes[selectedName];
+      const customPals = getCustomPalettes();
+
+      if (customPals[selectedName]) {
+        const colors = customPals[selectedName];
         setPreviewColors(colors);
         onPaletteSelect(colors);
+        if (onPaletteNameSelect) {
+          onPaletteNameSelect(selectedName);
+        }
       } else {
         setIsLoading(true);
         const colors = await fetchLospecPalette(selectedName);
         if (colors) {
           setPreviewColors(colors);
           onPaletteSelect(colors);
+          if (onPaletteNameSelect) {
+            onPaletteNameSelect(selectedName);
+          }
         }
         setIsLoading(false);
       }
     };
     updatePreview();
-  }, [selectedName, customPalettes]);
+  }, [selectedName, onPaletteSelect, onPaletteNameSelect]);
 
   const submitLospecImport = async (e) => {
     if (e) e.preventDefault();
@@ -94,8 +102,8 @@ const PaletteSelector = ({ onPaletteSelect, currentPaletteColors }) => {
       <div className="input-group">
         <label>Select Palette</label>
         <div className="palette-select-container">
-          <select 
-            value={selectedName} 
+          <select
+            value={selectedName}
             onChange={(e) => setSelectedPaletteName(e.target.value)}
             className="palette-select"
           >
@@ -160,7 +168,7 @@ const PaletteSelector = ({ onPaletteSelect, currentPaletteColors }) => {
         {isLoading ? (
           <div className="preview-loading"><Loader2 size={16} className="spin" /> Fetching colors...</div>
         ) : (
-          <PalettePreview colors={previewColors} />
+          <PalettePreview colors={previewColors} sortedPreview={sortPreview} twoRows={true} />
         )}
       </div>
     </div>

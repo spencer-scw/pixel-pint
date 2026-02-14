@@ -21,7 +21,7 @@ export const loadProjectData = (id) => {
   return data ? JSON.parse(data) : null;
 };
 
-export const createProject = (name, width, height, palette) => {
+export const createProject = (name, width, height, palette, paletteName = null) => {
   const id = Date.now().toString();
   const newProject = {
     id,
@@ -29,16 +29,17 @@ export const createProject = (name, width, height, palette) => {
     width: parseInt(width),
     height: parseInt(height),
     palette: palette || ['#000000', '#FFFFFF'],
+    paletteName: paletteName || null,
     lastModified: Date.now(),
   };
-  
+
   const projects = getProjects();
   projects.unshift(newProject);
   saveProjectList(projects);
-  
+
   // Initialize empty data
   saveProjectData(id, { foreground: null, background: null });
-  
+
   return newProject;
 };
 
