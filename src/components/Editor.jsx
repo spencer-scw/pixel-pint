@@ -42,7 +42,7 @@ const Editor = ({ projectId, onBack }) => {
       const data = canvasRef.current.save();
       const thumbnail = canvasRef.current.getThumbnail();
       saveProjectData(projectId, data);
-      updateProjectMeta(projectId, { thumbnail, name: project.name, palette: project.palette });
+      updateProjectMeta(projectId, { thumbnail, name: project.name, palette: project.palette, paletteName: project.paletteName });
       setSaveStatus('saved');
     }
   }, [project, projectId]);
@@ -91,8 +91,8 @@ const Editor = ({ projectId, onBack }) => {
     }
   };
 
-  const onPaletteChange = (newPalette) => {
-    setProject(prev => ({ ...prev, palette: newPalette }));
+  const onPaletteChange = (newPalette, newPaletteName) => {
+    setProject(prev => ({ ...prev, palette: newPalette, paletteName: newPaletteName }));
     setSelectedColor(newPalette[0]);
     triggerAutoSave();
   };
@@ -191,11 +191,12 @@ const Editor = ({ projectId, onBack }) => {
         height={project.height}
       />
 
-      <PaletteModal 
-        isOpen={showPaletteModal} 
-        onClose={() => setShowPaletteModal(false)} 
+      <PaletteModal
+        isOpen={showPaletteModal}
+        onClose={() => setShowPaletteModal(false)}
         onSave={onPaletteChange}
         currentPalette={project.palette}
+        currentPaletteName={project.paletteName}
       />
     </>
   );
