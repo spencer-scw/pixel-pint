@@ -1,10 +1,30 @@
+// Cache for bundled palettes (loaded once)
+let bundledPalettes = null;
+
+const loadBundledPalettes = async () => {
+  if (bundledPalettes) return bundledPalettes;
+  try {
+    const response = await fetch(import.meta.env.BASE_URL + 'palettes/bundled.json');
+    if (!response.ok) throw new Error('Bundled palettes not found');
+    bundledPalettes = await response.json();
+    return bundledPalettes;
+  } catch {
+    bundledPalettes = {};
+    return bundledPalettes;
+  }
+};
+
 export const fetchLospecPalette = async (name) => {
   try {
-    // Try local proxy first if available, otherwise fallback to corsproxy
-    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-      ? '/lospec-api' 
+    // Check bundled palettes first
+    const bundled = await loadBundledPalettes();
+    if (bundled[name]) return bundled[name];
+
+    // Fall back to fetching from Lospec
+    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? '/lospec-api'
       : 'https://corsproxy.io/?https://lospec.com';
-    
+
     const response = await fetch(`${baseUrl}/palette-list/${name}.hex`);
     if (!response.ok) throw new Error('Palette not found');
     const text = await response.text();
