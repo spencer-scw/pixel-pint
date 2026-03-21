@@ -25,7 +25,7 @@ export const parseHexFile = (text) => {
 
 export const getPopularPaletteNames = async () => {
   try {
-    const response = await fetch('/lospec-palettes.json');
+    const response = await fetch(import.meta.env.BASE_URL + 'lospec-palettes.json');
     if (!response.ok) throw new Error('Local palette list not found');
     return await response.json();
   } catch (error) {
