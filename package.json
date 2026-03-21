@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "fetch-palettes": "node scripts/fetch-palettes.js",
+    "build": "npm run fetch-palettes && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
