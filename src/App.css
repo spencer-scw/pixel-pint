@@ -429,6 +429,10 @@ main {
   z-index: 1;
 }
 
+.color-swatch.temp {
+  border-style: dashed;
+}
+
 @media (prefers-color-scheme: dark) {
   .color-swatch {
     border: 2px solid rgba(255,255,255,0.2);

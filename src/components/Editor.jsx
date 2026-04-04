@@ -13,6 +13,8 @@ const Editor = ({ projectId, onBack }) => {
   const [tool, setTool] = useState('draw');
   const [activeLayer, setActiveLayer] = useState('foreground');
   const [selectedColor, setSelectedColor] = useState('#000000');
+  const [tempColor, setTempColor] = useState(null);
+  const [shouldScrollPalette, setShouldScrollPalette] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
   const [showPaletteModal, setShowPaletteModal] = useState(false);
   const [showMoreMenu, setShowMoreMenu] = useState(false);
@@ -148,15 +150,19 @@ const Editor = ({ projectId, onBack }) => {
       </header>
 
       <main>
-        <Palette 
-          colors={project.palette} 
-          selectedColor={selectedColor} 
+        <Palette
+          colors={project.palette}
+          selectedColor={selectedColor}
+          tempColor={tempColor}
+          shouldScroll={shouldScrollPalette}
           onSelectColor={(color) => {
             setSelectedColor(color);
+            setTempColor(null);
+            setShouldScrollPalette(false);
             if (tool === 'erase') {
               setTool('draw');
             }
-          }} 
+          }}
         />
 
         <Canvas
@@ -169,6 +175,14 @@ const Editor = ({ projectId, onBack }) => {
           initialData={projectData}
           onCanvasChange={triggerAutoSave}
           onHistoryChange={setHistoryStatus}
+          onColorPick={(color) => {
+            const hex = color.toLowerCase();
+            const inPalette = project.palette.some(c => c.toLowerCase() === hex);
+            setSelectedColor(inPalette ? project.palette.find(c => c.toLowerCase() === hex) : hex);
+            setTempColor(inPalette ? null : hex);
+            setShouldScrollPalette(true);
+            setTool('draw');
+          }}
         />
 
         <Toolbar 
