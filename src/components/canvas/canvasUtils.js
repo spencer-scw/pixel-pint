@@ -5,6 +5,10 @@ export const hexToRgba = (hex) => {
   return [r, g, b, 255];
 };
 
+export const rgbaToHex = (r, g, b) => {
+  return '#' + [r, g, b].map(v => v.toString(16).padStart(2, '0')).join('');
+};
+
 export const getPixel = (imgData, x, y, width) => {
   const i = (y * width + x) * 4;
   return [

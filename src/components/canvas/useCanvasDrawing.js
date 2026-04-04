@@ -1,7 +1,7 @@
 import { useRef } from 'react';
-import { getPixel, colorsMatch, hexToRgba } from './canvasUtils';
+import { getPixel, colorsMatch, hexToRgba, rgbaToHex } from './canvasUtils';
 
-export const useCanvasDrawing = (width, height, activeTool, activeLayer, selectedColor, onCanvasChange) => {
+export const useCanvasDrawing = (width, height, activeTool, activeLayer, selectedColor, onCanvasChange, onColorPick) => {
   const isDrawing = useRef(false);
 
   const floodFill = (ctx, startX, startY, fillColor) => {
@@ -49,7 +49,14 @@ export const useCanvasDrawing = (width, height, activeTool, activeLayer, selecte
     if (x >= 0 && x < width && y >= 0 && y < height) {
       const ctx = canvas.getContext('2d', { willReadFrequently: true });
       
-      if (activeTool === 'fill' && !forceDraw) {
+      if (activeTool === 'eyedropper' && !forceDraw) {
+        const imgData = ctx.getImageData(0, 0, width, height);
+        const [r, g, b, a] = getPixel(imgData, x, y, width);
+        if (a > 0 && onColorPick) {
+          onColorPick(rgbaToHex(r, g, b));
+        }
+        return;
+      } else if (activeTool === 'fill' && !forceDraw) {
         floodFill(ctx, x, y, selectedColor);
       } else if (activeTool === 'erase') {
         ctx.clearRect(x, y, 1, 1);

@@ -12,7 +12,8 @@ const Canvas = forwardRef(({
   selectedColor = '#000000',
   initialData = null,
   onCanvasChange,
-  onHistoryChange
+  onHistoryChange,
+  onColorPick
 }, ref) => {
   const checkerboardRef = useRef(null);
   const backgroundRef = useRef(null);
@@ -24,7 +25,7 @@ const Canvas = forwardRef(({
   const MAX_HISTORY = 50;
 
   const { isDrawing, handleAction } = useCanvasDrawing(
-    width, height, activeTool, activeLayer, selectedColor, onCanvasChange
+    width, height, activeTool, activeLayer, selectedColor, onCanvasChange, onColorPick
   );
 
   const {
@@ -164,6 +165,10 @@ const Canvas = forwardRef(({
   }, [width, height]);
 
   const onMouseDown = (e) => {
+    if (activeTool === 'eyedropper') {
+      handleAction(e.clientX, e.clientY, backgroundRef, foregroundRef);
+      return;
+    }
     if (activeTool !== 'fill') isDrawing.current = true;
     saveStateToUndo();
     handleAction(e.clientX, e.clientY, backgroundRef, foregroundRef);
@@ -177,6 +182,10 @@ const Canvas = forwardRef(({
 
   const onTouchStart = (e) => {
     if (!handleGestureStart(e)) {
+      if (activeTool === 'eyedropper') {
+        handleAction(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef);
+        return;
+      }
       if (activeTool !== 'fill') isDrawing.current = true;
       saveStateToUndo();
       handleAction(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef);
