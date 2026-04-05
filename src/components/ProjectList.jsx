@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
-import { getProjects } from '../utils/storage';
+import { getProjects, deleteProject, updateProjectMeta } from '../utils/storage';
 import NewProjectModal from './NewProjectModal';
+import ProjectCard from './ProjectCard';
 import './ProjectList.css';
 
 const ProjectList = ({ onSelectProject }) => {
@@ -15,6 +16,14 @@ const ProjectList = ({ onSelectProject }) => {
   const handleProjectCreated = (id) => {
     setIsModalOpen(false);
     onSelectProject(id);
+  };
+
+  const handleRename = (id, newName) => {
+    setProjects(updateProjectMeta(id, { name: newName }));
+  };
+
+  const handleDelete = (id) => {
+    setProjects(deleteProject(id));
   };
 
   return (
@@ -37,28 +46,7 @@ const ProjectList = ({ onSelectProject }) => {
            <p className="empty-state">No drawings yet. Create one!</p>
         )}
         {projects.map((project) => (
-          <div key={project.id} className="project-card" onClick={() => onSelectProject(project.id)}>
-            <div className={`project-preview ${project.thumbnail ? 'has-thumbnail' : ''}`}>
-               {project.thumbnail ? (
-                 <img 
-                   src={project.thumbnail} 
-                   alt={project.name} 
-                   className="thumbnail-img" 
-                   style={{ 
-                     aspectRatio: `${project.width} / ${project.height}`,
-                     width: project.width >= project.height ? '100%' : 'auto',
-                     height: project.width >= project.height ? 'auto' : '100%'
-                   }}
-                 />
-               ) : (
-                 <span className="project-size-badge">{project.width}x{project.height}</span>
-               )}
-            </div>
-            <div className="project-info">
-              <h3>{project.name}</h3>
-              <p>{new Date(project.lastModified).toLocaleDateString()}</p>
-            </div>
-          </div>
+          <ProjectCard key={project.id} project={project} onSelect={onSelectProject} onRename={handleRename} onDelete={handleDelete} />
         ))}
       </div>
     </div>
