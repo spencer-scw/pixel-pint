@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Download, ChevronLeft, MoreVertical, Trash2, Palette as PaletteIcon } from 'lucide-react';
+import { Download, ChevronLeft, MoreVertical, Trash2, Palette as PaletteIcon, ArrowDownToDot } from 'lucide-react';
 import Canvas from './canvas/Canvas';
 import Palette from './Palette';
 import Toolbar from './Toolbar';
@@ -22,6 +22,7 @@ const Editor = ({ projectId, onBack }) => {
   const [editingName, setEditingName] = useState('');
   const [saveStatus, setSaveStatus] = useState('saved'); // 'saved' | 'saving'
   const [historyStatus, setHistoryStatus] = useState({ canUndo: false, canRedo: false });
+  const [pixelPerfect, setPixelPerfect] = useState(false);
   
   const canvasRef = useRef(null);
   const saveTimeoutRef = useRef(null);
@@ -128,17 +129,25 @@ const Editor = ({ projectId, onBack }) => {
         </div>
         <div className="header-actions">
           <button className="export-btn" onClick={() => setShowExportModal(true)} title="Export">
-            <Download size={20} />
+            <Download size={30} />
           </button>
           <div className="more-menu-container">
             <button className="more-btn" onClick={() => setShowMoreMenu(!showMoreMenu)} title="More">
-              <MoreVertical size={20} />
+              <MoreVertical size={30} />
             </button>
             {showMoreMenu && (
               <div className="more-menu">
                 <button className="menu-item" onClick={() => { setShowPaletteModal(true); setShowMoreMenu(false); }}>
                   <PaletteIcon size={16} /> Change Palette
                 </button>
+                <label className="menu-item menu-item-toggle">
+                  <ArrowDownToDot size={16} /> Pixel Perfect
+                  <input
+                    type="checkbox"
+                    checked={pixelPerfect}
+                    onChange={() => setPixelPerfect(p => !p)}
+                  />
+                </label>
                 <div className="menu-divider" />
                 <button className="menu-item danger" onClick={handleResetCanvas}>
                   <Trash2 size={16} /> Reset Canvas
@@ -172,6 +181,7 @@ const Editor = ({ projectId, onBack }) => {
           activeTool={tool}
           activeLayer={activeLayer}
           selectedColor={selectedColor}
+          pixelPerfect={pixelPerfect}
           initialData={projectData}
           onCanvasChange={triggerAutoSave}
           onHistoryChange={setHistoryStatus}

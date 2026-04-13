@@ -10,6 +10,7 @@ const Canvas = forwardRef(({
   activeTool = 'draw',
   activeLayer = 'foreground',
   selectedColor = '#000000',
+  pixelPerfect = false,
   initialData = null,
   onCanvasChange,
   onHistoryChange,
@@ -24,8 +25,14 @@ const Canvas = forwardRef(({
   const redoStack = useRef([]);
   const MAX_HISTORY = 50;
 
-  const { isDrawing, handleAction } = useCanvasDrawing(
-    width, height, activeTool, activeLayer, selectedColor, onCanvasChange, onColorPick
+  const {
+    isDrawing,
+    startStroke,
+    continueStroke,
+    endStroke,
+    handleClickAction,
+  } = useCanvasDrawing(
+    width, height, activeTool, activeLayer, selectedColor, onCanvasChange, onColorPick, pixelPerfect
   );
 
   const {
@@ -166,41 +173,49 @@ const Canvas = forwardRef(({
 
   const onMouseDown = (e) => {
     if (activeTool === 'eyedropper') {
-      handleAction(e.clientX, e.clientY, backgroundRef, foregroundRef);
+      handleClickAction(e.clientX, e.clientY, backgroundRef, foregroundRef);
       return;
     }
-    if (activeTool !== 'fill') isDrawing.current = true;
+    if (activeTool === 'fill') {
+      saveStateToUndo();
+      handleClickAction(e.clientX, e.clientY, backgroundRef, foregroundRef);
+      return;
+    }
     saveStateToUndo();
-    handleAction(e.clientX, e.clientY, backgroundRef, foregroundRef);
+    startStroke(e.clientX, e.clientY, backgroundRef, foregroundRef);
   };
 
   const onMouseMove = (e) => {
-    if (isDrawing.current) handleAction(e.clientX, e.clientY, backgroundRef, foregroundRef, true);
+    continueStroke(e.clientX, e.clientY, backgroundRef, foregroundRef);
   };
 
-  const onMouseUp = () => isDrawing.current = false;
+  const onMouseUp = () => endStroke();
 
   const onTouchStart = (e) => {
     if (!handleGestureStart(e)) {
       if (activeTool === 'eyedropper') {
-        handleAction(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef);
+        handleClickAction(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef);
         return;
       }
-      if (activeTool !== 'fill') isDrawing.current = true;
+      if (activeTool === 'fill') {
+        saveStateToUndo();
+        handleClickAction(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef);
+        return;
+      }
       saveStateToUndo();
-      handleAction(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef);
+      startStroke(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef);
     }
   };
 
   const onTouchMove = (e) => {
-    if (!handleGestureMove(e) && isDrawing.current) {
-      handleAction(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef, true);
+    if (!handleGestureMove(e)) {
+      continueStroke(e.touches[0].clientX, e.touches[0].clientY, backgroundRef, foregroundRef);
     }
   };
 
   const onTouchEnd = (e) => {
     if (e.touches.length < 2) touchState.current.isZooming = false;
-    isDrawing.current = false;
+    endStroke();
   };
 
   return (
