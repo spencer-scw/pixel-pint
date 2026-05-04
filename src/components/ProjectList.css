@@ -15,7 +15,13 @@
   font-family: 'Courier New', Courier, monospace;
 }
 
-.new-project-btn {
+.project-list-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.new-project-btn,
+.import-project-btn {
   background: #333;
   color: white;
   border: none;
@@ -28,10 +34,21 @@
   gap: 0.5rem;
 }
 
+.import-project-btn {
+  background: transparent;
+  color: #333;
+  border: 1px solid #333;
+}
+
 @media (prefers-color-scheme: dark) {
   .new-project-btn {
     background: #eee;
     color: #1a1a1a;
+  }
+  .import-project-btn {
+    background: transparent;
+    color: #eee;
+    border-color: #eee;
   }
 }
 
