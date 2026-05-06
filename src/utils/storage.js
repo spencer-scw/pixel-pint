@@ -54,6 +54,13 @@ export const saveCustomPalette = (name, colors) => {
   localStorage.setItem(CUSTOM_PALETTES_KEY, JSON.stringify(palettes));
 };
 
+export const deleteProject = (id) => {
+  const projects = getProjects().filter(p => p.id !== id);
+  saveProjectList(projects);
+  localStorage.removeItem(`${STORAGE_PREFIX}project-${id}`);
+  return projects;
+};
+
 export const updateProjectMeta = (id, updates) => {
   const projects = getProjects();
   const index = projects.findIndex(p => p.id === id);
