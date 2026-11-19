@@ -892,6 +892,10 @@ main {
   cursor: pointer;
 }
 
+.primary-btn.danger {
+  background: #c0392b;
+}
+
 .secondary-btn {
   flex: 1;
   background: #eee;

@@ -61,21 +61,16 @@
 .project-card {
   background: white;
   border-radius: 8px;
-  overflow: hidden;
   box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   cursor: pointer;
   transition: transform 0.1s ease;
   border: 1px solid #eee;
 }
 
-.project-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
 .project-preview {
   width: 100%;
   aspect-ratio: 1 / 1;
+  overflow: hidden;
   background-color: white; /* Matches card color for letterboxing */
   display: flex;
   align-items: center;
@@ -125,6 +120,8 @@
 .project-info {
   padding: 0.75rem;
   background: white;
+  position: relative;
+  cursor: pointer;
 }
 
 .project-info h3 {
@@ -142,6 +139,59 @@
   color: #888;
 }
 
+.project-rename-input {
+  flex: 1;
+  min-width: 0;
+  max-width: 100%;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: inherit;
+  border: none;
+  border-bottom: 1px solid #ccc;
+  background: transparent;
+  padding: 0;
+  outline: none;
+}
+
+.project-menu-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(100% + 4px);
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  z-index: 10;
+  min-width: 100px;
+  overflow: hidden;
+}
+
+.project-menu-dropdown button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.8rem;
+  font-family: inherit;
+  cursor: pointer;
+  color: #333;
+}
+
+.project-menu-dropdown button:hover {
+  background: #f5f5f5;
+}
+
+.project-menu-dropdown button.delete {
+  color: #c0392b;
+}
+
+.project-menu-dropdown button.delete:hover {
+  background: #fdf0ef;
+}
+
 @media (prefers-color-scheme: dark) {
   .project-card, .project-info {
     background: #1a1a1a;
@@ -149,6 +199,22 @@
   }
   .project-info h3 {
     color: #eee;
+  }
+  .project-rename-input {
+    border-color: #555;
+  }
+  .project-menu-dropdown {
+    background: #2a2a2a;
+    border-color: #444;
+  }
+  .project-menu-dropdown button {
+    color: #eee;
+  }
+  .project-menu-dropdown button:hover {
+    background: #333;
+  }
+  .project-menu-dropdown button.delete:hover {
+    background: #3a1a1a;
   }
 }
 

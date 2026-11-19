@@ -8,7 +8,8 @@ export default defineConfig({
   server: {
     host: true,
     allowedHosts: [
-      "skrewt-station.local"
+      "skrewt-station.local",
+			"beep-boop.local"
     ],
     proxy: {
       '/lospec-api': {

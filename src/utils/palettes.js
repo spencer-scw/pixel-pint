@@ -21,7 +21,7 @@ export const fetchLospecPalette = async (name) => {
     if (bundled[name]) return bundled[name];
 
     // Fall back to fetching from Lospec
-    const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    const baseUrl = import.meta.env.DEV
       ? '/lospec-api'
       : 'https://corsproxy.io/?https://lospec.com';
 
